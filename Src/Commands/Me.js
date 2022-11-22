@@ -7,7 +7,7 @@ const MessageData = require('../schema/MessageData');
 const { MessageEmbed } = require("discord.js");
  class Commands {
   constructor() {
-    this.name = "my";
+    this.name = "me";
     this.description = "üyesinin ses ve chat istatistikleri gösterir";
     this.options = [];
   }

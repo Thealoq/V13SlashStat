@@ -4,8 +4,8 @@ const MemberData = require("../schema/GuildSettings");
 const { MessageEmbed } = require("discord.js");
 class Commands {
   constructor() {
-    this.name = "rol";
-    this.description = "seviye rolü ayarlama";
+    this.name = "mesaj-rol";
+    this.description = "ses seviyesi ve rolü ayarlama";
     this.options = [
       {
         type: 8,
@@ -24,11 +24,11 @@ class Commands {
     const Role = ctx.options._hoistedOptions.find((t) => t.name == "role");
     const Level = ctx.options._hoistedOptions.find((t) => t.name == "level");
     if (!Role && !Level) return ctx.reply("[❌] Level veya Role Belirlemedin");
-    const Data = await MemberData.findOne({ GuildId: ctx.guild.id })
+    const Data = await MemberData.findOne({ GuildId: ctx.guild.id, Set: { $elemMatch: { type: "message" } }})
     if(Data) {
       await MemberData.findOneAndUpdate(
-        { GuildId: ctx.guild.id },
-        { $set: { Set: { role: Role.value, level: Level.value } } }
+        { GuildId: ctx.guild.id, Set: { $elemMatch: { type: "message" }} },
+        { $set: { Set: { role: Role.value, level: Level.value, type: "message" } } }
       )
         .then((t) =>
           ctx.reply(
@@ -39,7 +39,8 @@ class Commands {
     }  else {
       new MemberData({
         GuildId: ctx.guild.id,
-        Set: { role: Role.value, level: Level.value },
+        Set: { role: Role.value, level: Level.value, type: "message"},
+       
       }).save();
       ctx.reply(
         `Başariyla <@&${Role.value}> Rolü \`${Level.value}\` Leveline Ayarlandi `

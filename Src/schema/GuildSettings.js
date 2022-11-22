@@ -4,6 +4,7 @@ const GuildSettings = mongoose.Schema(
   {
     GuildId: String,
     Set: Array,
+    type: String
   },
   { minimize: false, collection: "GuildSettings" }
 );

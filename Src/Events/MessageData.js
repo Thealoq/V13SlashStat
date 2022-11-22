@@ -2,6 +2,7 @@ const config = global.config
 const client = global.client
 const MessageData = require("../schema/MessageData")
 const MessageChannel = require("../schema/MessageChannel")
+const GuildSettings = require("../schema/GuildSettings")
 class Events {
     constructor() {
         this.name = "messageCreate"
@@ -17,6 +18,10 @@ class Events {
             })
             Veri.save()
         } else {
+            const Settings = await GuildSettings.find({ GuildId: message.guild.id, Set: { $elemMatch: { type: "message" } } })
+            if(Veri.Point >= Settings[0].Set[0].level ) {
+             message.member.roles.add(Settings[0].Set[0].role)
+            } 
             Veri.Point += 1
             Veri.save()
         }
@@ -32,6 +37,7 @@ class Events {
             Channel.Point += 1
             Channel.save()
         }
+      
     }
 }
 module.exports = Events

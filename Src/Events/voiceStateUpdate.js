@@ -24,6 +24,10 @@ class Events {
                 })
                 newData.save().catch(err => console.log(err));
             } else {
+                const Settings = await GuildSettings.find({ GuildId: oldState.guild.id, Set: { $elemMatch: { type: "voice" } } })
+               if(Cover(UserData.VoiceTime) >= Settings[0].Set[0].level) {
+                oldState.member.roles.add(Settings[0].Set[0].role)
+               } 
                 const data = Date.now() - DataBase.get(oldState.member.id)
                 UserData.VoiceTime = data + UserData.VoiceTime
                 UserData.save().catch(err => console.log(err));
@@ -40,7 +44,6 @@ class Events {
             } else {
                 const datas = Date.now() - DataBase.get(oldState.member.id)
                 ChannelData.VoiceTime = datas + ChannelData.VoiceTime
-                const Settings = await GuildSettings.find({ GuildId: oldState.guild.id })
                 ChannelData.save().catch(err => console.log(err));
             }
                 DataBase.delete(oldState.member.id)
@@ -48,3 +51,8 @@ class Events {
     }
 }
 module.exports = Events
+
+function Cover(millis) {
+    var minutes = Math.floor(millis / 60000);
+    return minutes;
+  }
